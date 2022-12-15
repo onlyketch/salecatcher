@@ -1,0 +1,13 @@
+@import 'reset';
+@import 'animate';
+
+
+html {
+	background-color: #fff;
+	height: calc(100%);
+}
+body {
+	margin: 0 auto;
+	max-width: 550px;
+	height: 100%;
+}
