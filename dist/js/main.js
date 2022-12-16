@@ -84,9 +84,32 @@ Crafty.c("town", {
 	}	
 })
 
+Crafty.c("floor", {
+	init: function() {
+		this.addComponent("2D, DOM, Solid");
+		this.w = mainContainer.w;
+		this.h = 14;
+		this.x = mainContainer.x;
+		this.y = mainContainer.y + (mainContainer.h - this.h);
+		this.z = 15;
+	}
+})
+
+Crafty.c("ceiling", {
+	init: function() {
+		this.addComponent("2D, DOM, Solid");
+		this.w = mainContainer.w;
+		this.h = 14;
+		this.x = mainContainer.x;
+		this.y = mainContainer.y - this.h;
+		this.z = 15;
+	}
+		
+})
+
 Crafty.c("Plane", {
 	init: function() {
-		this.addComponent("2D, DOM, planes, SpriteAnimation, Collision");
+		this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity");
 		this.w = 69;
 		this.h = 39;
 		this.x = mainContainer.x + 90;
@@ -96,7 +119,7 @@ Crafty.c("Plane", {
 		this.rotation = this.rotation - 2;
 		this.reel("prop", 50, [[0,0], [1,0]]);
 		this.animate("prop", -1);
-		this.checkHits("Stamp");
+		this.checkHits("Solid");
 	},
 	events: {
 		"UpdateFrame": function() {
@@ -107,8 +130,7 @@ Crafty.c("Plane", {
 				}	
 		},
 		"HitOn": function() {
-			flightDirection = 0;
-			gameOver = true;
+			planeFall();
 		}
 	}
 })
@@ -138,7 +160,7 @@ Crafty.c("Stamp", {
 	init: function() {
 		var rnd = Math.floor(Math.random() * stamps.length);
 
-		this.addComponent("2D, DOM, Collision, " + stamps[rnd]);
+		this.addComponent("2D, DOM, Collision, Solid, " + stamps[rnd]);
 		switch (stamps[rnd]) {
 			case "big":
 				this.h = 282;
@@ -183,6 +205,17 @@ Crafty.c("Stamp", {
 		}
 	}
 
+	function planeFall() {
+		if (!gameOver) {
+			Crafty.audio.play("hit", 1);
+			flightDirection = 0;
+			gameOver = true;
+			plane.pauseAnimation();
+			plane.gravity("floor");
+		}
+
+	}
+
 	Crafty.init(sceenWidth, screenHeight, document.getElementById('game'));
 	Crafty.background("#1A3E42");
 
@@ -200,6 +233,9 @@ Crafty.c("Stamp", {
 	Crafty.sprite("./images/middle.png", {middle:[0,0,86,460]});
 	Crafty.sprite("./images/small.png", {small:[0,0,86,340]});
 
+	/*Sounds*/
+	Crafty.audio.add("hit", "./sound/hit.mp3");
+
 	var mainContainer = Crafty.e("2D, DOM")
 		.attr({w: sceenWidth, h: 420, x: 0})
 		.css({'background': '#87D8D9', 'overflow': 'hidden'});
@@ -211,7 +247,7 @@ Crafty.c("Stamp", {
 
 
 	var moon = Crafty.e("2D, DOM, moon, Mouse")
-		.attr({ y: mainContainer.y + 27, x: mainContainer.x + 125, w: 40, h: 40 });
+		.attr({ y: mainContainer.y + 27, x: mainContainer.x + 125, w: 40, h: 40 });	
 
 	var cloud1 = Crafty.e("2D, DOM, cloud1")
 		.attr({ y: mainContainer.y + 17, x: mainContainer.x + 16, w: 65, h: 24 });
@@ -224,16 +260,14 @@ Crafty.c("Stamp", {
 
 	Crafty.e("Snow");
 
-	//***_Restart_***
-	moon.bind('Click', function(e) {
-		Crafty.enterScene("game");
-	})
+	Crafty.e("floor");
+	Crafty.e("ceiling");
 
 	//***_UI objects_***
     Crafty.e("Button");
 
 
 	//***_Plane_***
-	Crafty.e("Plane");
+	var plane = Crafty.e("Plane");
 
 	createStamp();

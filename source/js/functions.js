@@ -70,9 +70,32 @@ Crafty.c("town", {
 	}	
 })
 
+Crafty.c("floor", {
+	init: function() {
+		this.addComponent("2D, DOM, Solid");
+		this.w = mainContainer.w;
+		this.h = 14;
+		this.x = mainContainer.x;
+		this.y = mainContainer.y + (mainContainer.h - this.h);
+		this.z = 15;
+	}
+})
+
+Crafty.c("ceiling", {
+	init: function() {
+		this.addComponent("2D, DOM, Solid");
+		this.w = mainContainer.w;
+		this.h = 14;
+		this.x = mainContainer.x;
+		this.y = mainContainer.y - this.h;
+		this.z = 15;
+	}
+		
+})
+
 Crafty.c("Plane", {
 	init: function() {
-		this.addComponent("2D, DOM, planes, SpriteAnimation, Collision");
+		this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity");
 		this.w = 69;
 		this.h = 39;
 		this.x = mainContainer.x + 90;
@@ -82,7 +105,7 @@ Crafty.c("Plane", {
 		this.rotation = this.rotation - 2;
 		this.reel("prop", 50, [[0,0], [1,0]]);
 		this.animate("prop", -1);
-		this.checkHits("Stamp");
+		this.checkHits("Solid");
 	},
 	events: {
 		"UpdateFrame": function() {
@@ -93,8 +116,7 @@ Crafty.c("Plane", {
 				}	
 		},
 		"HitOn": function() {
-			flightDirection = 0;
-			gameOver = true;
+			planeFall();
 		}
 	}
 })
@@ -124,7 +146,7 @@ Crafty.c("Stamp", {
 	init: function() {
 		var rnd = Math.floor(Math.random() * stamps.length);
 
-		this.addComponent("2D, DOM, Collision, " + stamps[rnd]);
+		this.addComponent("2D, DOM, Collision, Solid, " + stamps[rnd]);
 		switch (stamps[rnd]) {
 			case "big":
 				this.h = 282;

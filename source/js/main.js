@@ -15,6 +15,17 @@
 		}
 	}
 
+	function planeFall() {
+		if (!gameOver) {
+			Crafty.audio.play("hit", 1);
+			flightDirection = 0;
+			gameOver = true;
+			plane.pauseAnimation();
+			plane.gravity("floor");
+		}
+
+	}
+
 	Crafty.init(sceenWidth, screenHeight, document.getElementById('game'));
 	Crafty.background("#1A3E42");
 
@@ -32,6 +43,9 @@
 	Crafty.sprite("./images/middle.png", {middle:[0,0,86,460]});
 	Crafty.sprite("./images/small.png", {small:[0,0,86,340]});
 
+	/*Sounds*/
+	Crafty.audio.add("hit", "./sound/hit.mp3");
+
 	var mainContainer = Crafty.e("2D, DOM")
 		.attr({w: sceenWidth, h: 420, x: 0})
 		.css({'background': '#87D8D9', 'overflow': 'hidden'});
@@ -43,7 +57,7 @@
 
 
 	var moon = Crafty.e("2D, DOM, moon, Mouse")
-		.attr({ y: mainContainer.y + 27, x: mainContainer.x + 125, w: 40, h: 40 });
+		.attr({ y: mainContainer.y + 27, x: mainContainer.x + 125, w: 40, h: 40 });	
 
 	var cloud1 = Crafty.e("2D, DOM, cloud1")
 		.attr({ y: mainContainer.y + 17, x: mainContainer.x + 16, w: 65, h: 24 });
@@ -56,16 +70,14 @@
 
 	Crafty.e("Snow");
 
-	//***_Restart_***
-	moon.bind('Click', function(e) {
-		Crafty.enterScene("game");
-	})
+	Crafty.e("floor");
+	Crafty.e("ceiling");
 
 	//***_UI objects_***
     Crafty.e("Button");
 
 
 	//***_Plane_***
-	Crafty.e("Plane");
+	var plane = Crafty.e("Plane");
 
 	createStamp();
