@@ -148,6 +148,7 @@ Crafty.c("Button", {
 
 		this.bind('Click', function(e) {
 			if (!gameOver) {
+				Crafty.audio.play("spin", 1, 0.8);
 				if (flightDirection == -1) flightDirection = 1;
 				else if (flightDirection == 1) flightDirection = -1;
 				else flightDirection = 1;
@@ -235,6 +236,7 @@ Crafty.c("Stamp", {
 
 	/*Sounds*/
 	Crafty.audio.add("hit", "./sound/hit.mp3");
+	Crafty.audio.add("spin", "./sound/spin.mp3");
 
 	var mainContainer = Crafty.e("2D, DOM")
 		.attr({w: sceenWidth, h: 420, x: 0})

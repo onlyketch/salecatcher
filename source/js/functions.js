@@ -134,6 +134,7 @@ Crafty.c("Button", {
 
 		this.bind('Click', function(e) {
 			if (!gameOver) {
+				Crafty.audio.play("spin", 1, 0.8);
 				if (flightDirection == -1) flightDirection = 1;
 				else if (flightDirection == 1) flightDirection = -1;
 				else flightDirection = 1;

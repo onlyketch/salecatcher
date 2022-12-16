@@ -45,6 +45,7 @@
 
 	/*Sounds*/
 	Crafty.audio.add("hit", "./sound/hit.mp3");
+	Crafty.audio.add("spin", "./sound/spin.mp3");
 
 	var mainContainer = Crafty.e("2D, DOM")
 		.attr({w: sceenWidth, h: 420, x: 0})
