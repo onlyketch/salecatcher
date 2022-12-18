@@ -1,24 +1,20 @@
 
 Crafty.defineScene("mainScene", function() {
 
+	successFrame.style.display = 'none';
 	const sceenWidth = document.body.clientWidth;
 	const screenHeight = document.body.clientHeight;
 	var flightDirection = 0;
 	const stamps = ["big", "middle", "small"];
 	var gameOver = false;
 	var gameScore = 0;
-	var startGame = true;
-	var timerId;
 
 	function createStamp() {
 		const saleYPos = [120,140,160,180,200,220];
-		if (!gameOver && startGame) {
+		if (!gameOver) {		
 			Crafty.e("Stamp");
-			timerId = setInterval(function() {
-				Crafty.e("Stamp");
-				var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
-				Crafty.e("Sale").place(mainContainer.w + 140, mainContainer.y + saleYPosRnd);
-			}, 3000);
+			var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
+			Crafty.e("Sale").place(mainContainer.w + 140, mainContainer.y + saleYPosRnd);
 		}
 	}
 
@@ -29,7 +25,10 @@ Crafty.defineScene("mainScene", function() {
 			gameOver = true;
 			plane.pauseAnimation();
 			plane.gravity("floor");
-			clearInterval(timerId);
+			stampDelay.cancelDelay(createStamp);
+			setTimeout(function() {
+				successFrame.style.display = 'block';
+			}, 1000);		
 		}
 
 	}
@@ -260,7 +259,7 @@ Crafty.defineScene("mainScene", function() {
 		init: function() {
 			this.addComponent("2D, DOM, Text");
 			this.x = progressBar.x + (progressBar.w - 20);
-			this.y = progressBar.y + 4;
+			this.y = progressBar.y + 5;
 			this.z = 37;
 			this.text(function() { return gameScore});
 			this.dynamicTextGeneration(true);
@@ -335,10 +334,7 @@ Crafty.defineScene("mainScene", function() {
 
 
 	var moon = Crafty.e("2D, DOM, moon, Mouse")
-	.attr({ y: mainContainer.y + 27, x: mainContainer.x + 125, w: 40, h: 40 });
-	moon.bind("Click", function() {
-		Crafty.enterScene("mainScene");
-	})	
+	.attr({ y: mainContainer.y + 50, x: mainContainer.x + 150, w: 40, h: 40 });	
 
 	var cloud1 = Crafty.e("2D, DOM, cloud1")
 	.attr({ y: mainContainer.y + 17, x: mainContainer.x + 16, w: 65, h: 24 });
@@ -364,6 +360,7 @@ Crafty.defineScene("mainScene", function() {
 
 	//***_Plane_***
 	var plane = Crafty.e("Plane");
-
-	createStamp();
+	
+	// создание столбов
+	var stampDelay = Crafty.e("Delay").delay(createStamp, 3000, -1);
 })

@@ -3778,3 +3778,62 @@ body {
   max-width: 550px;
   height: 100%;
 }
+
+#game {
+  position: relative;
+}
+
+.success {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -147px;
+  margin-top: -105px;
+  width: 100%;
+  height: 210px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  max-width: 294px;
+  padding: 38px 12px;
+  background-color: #FFFFFF;
+  border-radius: 30px;
+  font-family: "Unbounded-Bold", Helvetica, sans-serif;
+  color: #204043;
+  text-align: center;
+  z-index: 100;
+  -webkit-animation: fadeIn 2s 1;
+          animation: fadeIn 2s 1;
+}
+.success__title {
+  font-size: 24px;
+  line-height: 29px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.success__score {
+  font-size: 12px;
+  line-height: 14px;
+}
+.success__lives {
+  font-size: 12px;
+  line-height: 14px;
+  margin-top: 8px;
+}
+.success__btn {
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  margin-top: 14px;
+  font-family: "Unbounded-Bold", Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #FFFFFF;
+  width: 100%;
+  max-width: 132px;
+  cursor: pointer;
+  background-color: #DF2123;
+  border-radius: 16px;
+  padding: 12px;
+}
