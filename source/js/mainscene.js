@@ -6,32 +6,30 @@ Crafty.defineScene("mainScene", function() {
 	var flightDirection = 0;
 	const stamps = ["big", "middle", "small"];
 	var gameOver = false;
+	var gameScore = 0;
 	var startGame = true;
 	var timerId;
 
 	function createStamp() {
+		const saleYPos = [120,140,160,180,200,220];
 		if (!gameOver && startGame) {
 			Crafty.e("Stamp");
 			timerId = setInterval(function() {
-				checkGameOver();
 				Crafty.e("Stamp");
+				var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
+				Crafty.e("Sale").place(mainContainer.w + 140, mainContainer.y + saleYPosRnd);
 			}, 3000);
-		}
-	}
-
-	function checkGameOver() {
-		if (gameOver) {
-			clearInterval(timerId);
 		}
 	}
 
 	function planeFall() {
 		if (!gameOver) {
-			Crafty.audio.play("hit", 1);
+			Crafty.audio.play("hit", 1, 0.5);
 			flightDirection = 0;
 			gameOver = true;
 			plane.pauseAnimation();
 			plane.gravity("floor");
+			clearInterval(timerId);
 		}
 
 	}
@@ -220,10 +218,85 @@ Crafty.defineScene("mainScene", function() {
 			this.z = 20;
 			this.reel("wings", 200, [[0,0], [1,0]]);
 			this.animate("wings", -1);
+			this.checkHits("Plane");
 		},
 		place: function(x,y) {
 			this.x = x;
 			this.y = y;
+		},
+		events: {
+			"UpdateFrame": function() {
+				if (!gameOver) this.x = this.x - 2;
+				if (this.x <= mainContainer.x - this.w) this.destroy();
+			},
+			"HitOn": function() {
+				Crafty.audio.play("collect", 1, 0.5);
+				if (gameScore != 12) {
+					gameScore += 1;
+					progressBarFill.w += 10;
+				}
+				this.destroy();
+			}			
+		}
+	})
+
+	Crafty.c("ProgressBar", {
+		init: function() {
+			this.addComponent("2D, DOM");
+			this.w = 120;
+			this.h = 20;
+			this.x = mainContainer.x + 24;
+			this.y = mainContainer.y + 28;
+			this.z = 35;
+			this.css({'background': 'rgba(9, 9, 15, 0.15)',
+					  'border': '1px solid rgba(186, 245, 246, 0.7)',
+					  'border-radius': '6px'	
+
+			});
+		}
+	})
+
+	Crafty.c("ProgressBarText", {
+		init: function() {
+			this.addComponent("2D, DOM, Text");
+			this.x = progressBar.x + (progressBar.w - 20);
+			this.y = progressBar.y + 4;
+			this.z = 37;
+			this.text(function() { return gameScore});
+			this.dynamicTextGeneration(true);
+			this.textFont({
+				family: 'Unbounded-Bold',
+				size: '12px',
+				lineHeight: '14px',
+				color: '#204043'
+			});
+		}
+	})
+
+	Crafty.c("ProgressBarImg", {
+		init: function() {
+			this.addComponent("2D, DOM, uisale");
+			this.w = 12;
+			this.h = 13;
+			this.x = progressBarText.x - 15;
+			this.y = progressBar.y + 4;
+			this.z = 37;
+		}
+	})
+
+	Crafty.c("ProgressBarFill", {
+		init: function() {
+			this.addComponent("2D, DOM");
+			this.x = progressBar.x + 1;
+			this.y = progressBar.y + 1;
+			this.w = 0;
+			this.h = 20;
+			this.z = 36;
+			this.css({
+				'background': 'linear-gradient(0deg, #FFFFFF, #FFFFFF), radial-gradient(74.41% 75.85% at 38.33% -28.85%, #EEDDE5 0%, #E1ECFB 100%)',
+				'box-shadow': 'inset 1.71428px 1.71428px 1.71428px rgba(224, 242, 255, 0.6), inset -1.71428px -1.71428px 1.71428px rgba(0, 135, 252, 0.25)',
+				'border-radius': '6px'
+			}); 
 		}
 	})
 
@@ -244,10 +317,12 @@ Crafty.defineScene("mainScene", function() {
 	Crafty.sprite("./images/middle.png", {middle:[0,0,86,460]});
 	Crafty.sprite("./images/small.png", {small:[0,0,86,340]});
 	Crafty.sprite(133, 64, "./images/sales.png", {sales:[0,0]});
+	Crafty.sprite("./images/ui-sale.png", {uisale:[0,0,19,21]});
 
 	/*Sounds*/
 	Crafty.audio.add("hit", "./sound/hit.mp3");
 	Crafty.audio.add("spin", "./sound/spin.mp3");
+	Crafty.audio.add("collect", "./sound/collect.mp3");
 
 	var mainContainer = Crafty.e("2D, DOM")
 	.attr({w: sceenWidth, h: 420, x: 0})
@@ -281,11 +356,14 @@ Crafty.defineScene("mainScene", function() {
 
 	//***_UI objects_***
 	Crafty.e("Button");
+	var progressBar = Crafty.e("ProgressBar");
+	var progressBarText = Crafty.e("ProgressBarText");
+	Crafty.e("ProgressBarImg");
+	var progressBarFill = Crafty.e("ProgressBarFill");
 
 
 	//***_Plane_***
 	var plane = Crafty.e("Plane");
-	Crafty.e("Sale").place(mainContainer.x + 250, mainContainer.y + 200);
 
 	createStamp();
 })
