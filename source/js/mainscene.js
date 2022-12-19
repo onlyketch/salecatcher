@@ -4,10 +4,11 @@ Crafty.defineScene("mainScene", function() {
 	successFrame.style.display = 'none';
 	const sceenWidth = document.body.clientWidth;
 	const screenHeight = document.body.clientHeight;
-	var flightDirection = 0;
 	const stamps = ["big", "middle", "small"];
 	var gameOver = false;
 	var gameScore = 0;
+	var gameStart = false;
+	var stampDelay;
 
 	//***_sprites_***
 	Crafty.sprite("./images/city.png", {city:[0,0,2280,520]});
@@ -25,12 +26,22 @@ Crafty.defineScene("mainScene", function() {
 	Crafty.sprite(133, 64, "./images/sales.png", {sales:[0,0]});
 	Crafty.sprite("./images/ui-sale.png", {uisale:[0,0,19,21]});
 
+
+	function startGame() {
+		if (gameStart) {
+			stampDelay = Crafty.e("Delay").delay(createStamp, 2000, -1);
+			plane.gravity("floor");
+		}
+	}
+
 	function createStamp() {
-		const saleYPos = [120,140,160,180,200,220];
+		const saleYPos = [220, 200, 160, 180, 240, 260, 250];
+		const saleXPos = [140, 160, 120, 100, 180];
 		if (!gameOver) {		
 			Crafty.e("Stamp");
 			var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
-			Crafty.e("Sale").place(mainContainer.w + 180, mainContainer.y + saleYPosRnd);
+			var saleXPosRnd = Crafty.math.randomElementOfArray(saleXPos);
+			Crafty.e("Sale").place(mainContainer.w + saleXPosRnd, mainContainer.y + ( mainContainer.h - saleYPosRnd));
 		}
 	}
 
@@ -38,9 +49,7 @@ Crafty.defineScene("mainScene", function() {
 		if (!gameOver) {
 			plane.vy = 0;
 			plane.pauseAnimation();
-			plane.gravity("floor");
 			Crafty.audio.play("hit", 1, 0.5);
-			flightDirection = 0;
 			gameOver = true;
 			if ( lives > 0 ) lives -= 1;
 			stampDelay.cancelDelay(createStamp);
@@ -50,7 +59,7 @@ Crafty.defineScene("mainScene", function() {
 				successFrame.style.display = 'block';
 				successScore.textContent = 'Ты собрал скидок: ' + gameScore;
 				successLives.textContent = 'Отсалось попыток: ' + lives;
-			}, 1000);		
+			}, 500);		
 		}
 
 	}
@@ -93,20 +102,6 @@ Crafty.defineScene("mainScene", function() {
 				'backround-position': '0% 1140px',
 				'animation': 'townBackScroll linear 16s infinite'
 			});
-
-			// this.bind('UpdateFrame', function() {
-
-			// 	if (!gameOver) this.x = this.x - 1;
-
-			// 	if (this.x == -this.w) {
-			// 		this.destroy();
-			// 	} else if(this.x == -this.w/2) {
-			// 		Crafty.e("cityShadow").x = mainContainer.w;
-			// 	}				
-
-
-			// })
-
 		}
 	})
 
@@ -125,20 +120,6 @@ Crafty.defineScene("mainScene", function() {
 				'backround-position': '0% 1140px',
 				'animation': 'townScroll linear 12s infinite'
 			});
-
-			// this.bind('UpdateFrame', function() {
-
-			// 	if (!gameOver) this.x = this.x - 2;
-
-			// 	if (this.x == -this.w) {
-			// 		this.destroy();
-			// 	} else if(this.x == -this.w/2) {
-			// 		Crafty.e("town").x = mainContainer.w;
-			// 	}
-
-
-			// })
-
 		}	
 	})
 
@@ -167,30 +148,26 @@ Crafty.defineScene("mainScene", function() {
 
 	Crafty.c("Plane", {
 		init: function() {
-			this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity, Motion");
+			this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity, Jumper");
 			this.w = 69;
 			this.h = 39;
 			this.x = mainContainer.x + 90;
 			this.y = mainContainer.y + 110;
 			this.z = 20;
 			this.origin("center");
-			this.rotation = this.rotation - 2;
+			//this.rotation = this.rotation - 2;
 			this.reel("prop", 50, [[0,0], [1,0]]);
 			this.animate("prop", -1);
 			this.checkHits("Solid");
-			this.speed = 100;
-			this.vy = 0;
+			this.gravityConst(550);
+			this.jumpSpeed(260);
 		},
 		events: {
-			// "UpdateFrame": function() {
-			// 	if (flightDirection == -1) {
-			// 		this.y = this.y + 2;
-			// 	} else if (flightDirection == 1) {
-			// 		this.y = this.y - 2;
-			// 	}	
-			// },
 			"HitOn": function() {
 				planeFall();
+			},
+			"CheckJumping": function() {
+				this.canJump = true;
 			}
 		}
 	})
@@ -207,13 +184,13 @@ Crafty.defineScene("mainScene", function() {
 			this.css({'cursor': 'pointer'});
 
 			this.bind('Click', function(e) {
+				if (!gameStart) {
+					gameStart = true;
+					startGame();
+				}
 				if (!gameOver) {
-					Crafty.audio.play("spin", 1, 0.8);
-					plane.speed = -plane.speed;
-					plane.vy = plane.speed;
-					// if (flightDirection == -1) flightDirection = 1;
-					// else if (flightDirection == 1) flightDirection = -1;
-					// else flightDirection = 1;
+					Crafty.audio.play("spin", 1, 0.4);
+					plane.jump();
 				}
 			})
 		}
@@ -243,7 +220,7 @@ Crafty.defineScene("mainScene", function() {
 		},
 		events: {
 			"UpdateFrame": function() {
-				if (!gameOver) this.x = this.x - 4;
+				if (!gameOver) this.x = this.x - 3;
 				if (this.x <= mainContainer.x - this.w) {
 					this.destroy();
 				}
@@ -268,7 +245,7 @@ Crafty.defineScene("mainScene", function() {
 		},
 		events: {
 			"UpdateFrame": function() {
-				if (!gameOver) this.x = this.x - 4;
+				if (!gameOver) this.x = this.x - 3;
 				if (this.x <= mainContainer.x - this.w) this.destroy();
 			},
 			"HitOn": function() {
@@ -301,7 +278,7 @@ Crafty.defineScene("mainScene", function() {
 	Crafty.c("ProgressBarText", {
 		init: function() {
 			this.addComponent("2D, DOM, Text");
-			this.x = progressBar.x + (progressBar.w - 20);
+			this.x = progressBar.x + (progressBar.w - 22);
 			this.y = progressBar.y + 5;
 			this.z = 37;
 			this.text(function() { return gameScore});
@@ -387,7 +364,4 @@ Crafty.defineScene("mainScene", function() {
 
 	//***_Plane_***
 	var plane = Crafty.e("Plane");
-	
-	// создание столбов
-	var stampDelay = Crafty.e("Delay").delay(createStamp, 2000, -1);
 })
