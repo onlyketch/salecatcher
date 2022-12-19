@@ -3837,3 +3837,37 @@ body {
   border-radius: 16px;
   padding: 12px;
 }
+
+@-webkit-keyframes townScroll {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1140px;
+  }
+}
+
+@keyframes townScroll {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1140px;
+  }
+}
+@-webkit-keyframes townBackScroll {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1140px;
+  }
+}
+@keyframes townBackScroll {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -1140px;
+  }
+}

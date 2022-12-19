@@ -67,3 +67,13 @@ body {
 		padding: 12px;
 	}
 }
+
+@keyframes townScroll {
+	from { background-position-x: 0; }
+    to { background-position-x: -1140px}
+}
+
+@keyframes townBackScroll {
+	from { background-position-x: 0; }
+    to { background-position-x: -1140px; }
+}

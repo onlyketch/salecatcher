@@ -31,7 +31,7 @@ gulp.task('sass', function() {
 });
 
 gulp.task('js', function() {
-	return gulp.src(['source/js/crafty-min.js', 'source/js/mainscene.js', 'source/js/main.js'])
+	return gulp.src(['source/js/crafty-min.js', 'source/js/mainscene.js', 'source/js/testscene.js', 'source/js/main.js'])
 		.pipe(concat('main.js'))
 		//.pipe(uglify())
 		.pipe(gulp.dest('dist/js/'))
