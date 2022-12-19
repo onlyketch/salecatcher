@@ -3801,8 +3801,13 @@ body {
   color: #204043;
   text-align: center;
   z-index: 100;
+<<<<<<< HEAD
   -webkit-animation: fadeIn 2s 1;
           animation: fadeIn 2s 1;
+=======
+  -webkit-animation: fadeIn 1.5s 1;
+          animation: fadeIn 1.5s 1;
+>>>>>>> 83496a8 (Смена управления на flappy)
 }
 .success__title {
   font-size: 24px;

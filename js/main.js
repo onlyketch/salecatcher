@@ -18,10 +18,18 @@ Crafty.defineScene("mainScene", function() {
 	successFrame.style.display = 'none';
 	const sceenWidth = document.body.clientWidth;
 	const screenHeight = document.body.clientHeight;
+<<<<<<< HEAD
 	var flightDirection = 0;
 	const stamps = ["big", "middle", "small"];
 	var gameOver = false;
 	var gameScore = 0;
+=======
+	const stamps = ["big", "middle", "small"];
+	var gameOver = false;
+	var gameScore = 0;
+	var gameStart = false;
+	var stampDelay;
+>>>>>>> 83496a8 (Смена управления на flappy)
 
 	//***_sprites_***
 	Crafty.sprite("./images/city.png", {city:[0,0,2280,520]});
@@ -39,12 +47,30 @@ Crafty.defineScene("mainScene", function() {
 	Crafty.sprite(133, 64, "./images/sales.png", {sales:[0,0]});
 	Crafty.sprite("./images/ui-sale.png", {uisale:[0,0,19,21]});
 
+<<<<<<< HEAD
 	function createStamp() {
 		const saleYPos = [120,140,160,180,200,220];
 		if (!gameOver) {		
 			Crafty.e("Stamp");
 			var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
 			Crafty.e("Sale").place(mainContainer.w + 180, mainContainer.y + saleYPosRnd);
+=======
+	function startGame() {
+		if (gameStart) {
+			stampDelay = Crafty.e("Delay").delay(createStamp, 2000, -1);
+			plane.gravity("floor");
+		}
+	}
+
+	function createStamp() {
+		const saleYPos = [220, 200, 160, 180, 240, 260, 250];
+		const saleXPos = [140, 160, 120, 100, 180];
+		if (!gameOver) {		
+			Crafty.e("Stamp");
+			var saleYPosRnd = Crafty.math.randomElementOfArray(saleYPos);
+			var saleXPosRnd = Crafty.math.randomElementOfArray(saleXPos);
+			Crafty.e("Sale").place(mainContainer.w + saleXPosRnd, mainContainer.y + ( mainContainer.h - saleYPosRnd));
+>>>>>>> 83496a8 (Смена управления на flappy)
 		}
 	}
 
@@ -52,9 +78,13 @@ Crafty.defineScene("mainScene", function() {
 		if (!gameOver) {
 			plane.vy = 0;
 			plane.pauseAnimation();
+<<<<<<< HEAD
 			plane.gravity("floor");
 			Crafty.audio.play("hit", 1, 0.5);
 			flightDirection = 0;
+=======
+			Crafty.audio.play("hit", 1, 0.5);
+>>>>>>> 83496a8 (Смена управления на flappy)
 			gameOver = true;
 			if ( lives > 0 ) lives -= 1;
 			stampDelay.cancelDelay(createStamp);
@@ -64,7 +94,11 @@ Crafty.defineScene("mainScene", function() {
 				successFrame.style.display = 'block';
 				successScore.textContent = 'Ты собрал скидок: ' + gameScore;
 				successLives.textContent = 'Отсалось попыток: ' + lives;
+<<<<<<< HEAD
 			}, 1000);		
+=======
+			}, 500);		
+>>>>>>> 83496a8 (Смена управления на flappy)
 		}
 
 	}
@@ -108,6 +142,7 @@ Crafty.defineScene("mainScene", function() {
 				'animation': 'townBackScroll linear 16s infinite'
 			});
 
+<<<<<<< HEAD
 			// this.bind('UpdateFrame', function() {
 
 			// 	if (!gameOver) this.x = this.x - 1;
@@ -121,6 +156,8 @@ Crafty.defineScene("mainScene", function() {
 
 			// })
 
+=======
+>>>>>>> 83496a8 (Смена управления на flappy)
 		}
 	})
 
@@ -140,6 +177,7 @@ Crafty.defineScene("mainScene", function() {
 				'animation': 'townScroll linear 12s infinite'
 			});
 
+<<<<<<< HEAD
 			// this.bind('UpdateFrame', function() {
 
 			// 	if (!gameOver) this.x = this.x - 2;
@@ -153,6 +191,8 @@ Crafty.defineScene("mainScene", function() {
 
 			// })
 
+=======
+>>>>>>> 83496a8 (Смена управления на flappy)
 		}	
 	})
 
@@ -181,13 +221,18 @@ Crafty.defineScene("mainScene", function() {
 
 	Crafty.c("Plane", {
 		init: function() {
+<<<<<<< HEAD
 			this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity, Motion");
+=======
+			this.addComponent("2D, DOM, planes, SpriteAnimation, Collision, Gravity, Jumper");
+>>>>>>> 83496a8 (Смена управления на flappy)
 			this.w = 69;
 			this.h = 39;
 			this.x = mainContainer.x + 90;
 			this.y = mainContainer.y + 110;
 			this.z = 20;
 			this.origin("center");
+<<<<<<< HEAD
 			this.rotation = this.rotation - 2;
 			this.reel("prop", 50, [[0,0], [1,0]]);
 			this.animate("prop", -1);
@@ -205,6 +250,21 @@ Crafty.defineScene("mainScene", function() {
 			// },
 			"HitOn": function() {
 				planeFall();
+=======
+			//this.rotation = this.rotation - 2;
+			this.reel("prop", 50, [[0,0], [1,0]]);
+			this.animate("prop", -1);
+			this.checkHits("Solid");
+			this.gravityConst(550);
+			this.jumpSpeed(260);
+		},
+		events: {
+			"HitOn": function() {
+				planeFall();
+			},
+			"CheckJumping": function() {
+				this.canJump = true;
+>>>>>>> 83496a8 (Смена управления на flappy)
 			}
 		}
 	})
@@ -221,6 +281,7 @@ Crafty.defineScene("mainScene", function() {
 			this.css({'cursor': 'pointer'});
 
 			this.bind('Click', function(e) {
+<<<<<<< HEAD
 				if (!gameOver) {
 					Crafty.audio.play("spin", 1, 0.8);
 					plane.speed = -plane.speed;
@@ -228,6 +289,15 @@ Crafty.defineScene("mainScene", function() {
 					// if (flightDirection == -1) flightDirection = 1;
 					// else if (flightDirection == 1) flightDirection = -1;
 					// else flightDirection = 1;
+=======
+				if (!gameStart) {
+					gameStart = true;
+					startGame();
+				}
+				if (!gameOver) {
+					Crafty.audio.play("spin", 1, 0.4);
+					plane.jump();
+>>>>>>> 83496a8 (Смена управления на flappy)
 				}
 			})
 		}
@@ -257,7 +327,11 @@ Crafty.defineScene("mainScene", function() {
 		},
 		events: {
 			"UpdateFrame": function() {
+<<<<<<< HEAD
 				if (!gameOver) this.x = this.x - 4;
+=======
+				if (!gameOver) this.x = this.x - 3;
+>>>>>>> 83496a8 (Смена управления на flappy)
 				if (this.x <= mainContainer.x - this.w) {
 					this.destroy();
 				}
@@ -282,7 +356,11 @@ Crafty.defineScene("mainScene", function() {
 		},
 		events: {
 			"UpdateFrame": function() {
+<<<<<<< HEAD
 				if (!gameOver) this.x = this.x - 4;
+=======
+				if (!gameOver) this.x = this.x - 3;
+>>>>>>> 83496a8 (Смена управления на flappy)
 				if (this.x <= mainContainer.x - this.w) this.destroy();
 			},
 			"HitOn": function() {
@@ -315,7 +393,11 @@ Crafty.defineScene("mainScene", function() {
 	Crafty.c("ProgressBarText", {
 		init: function() {
 			this.addComponent("2D, DOM, Text");
+<<<<<<< HEAD
 			this.x = progressBar.x + (progressBar.w - 20);
+=======
+			this.x = progressBar.x + (progressBar.w - 22);
+>>>>>>> 83496a8 (Смена управления на flappy)
 			this.y = progressBar.y + 5;
 			this.z = 37;
 			this.text(function() { return gameScore});
@@ -402,6 +484,7 @@ Crafty.defineScene("mainScene", function() {
 	//***_Plane_***
 	var plane = Crafty.e("Plane");
 	
+<<<<<<< HEAD
 	// создание столбов
 	var stampDelay = Crafty.e("Delay").delay(createStamp, 2000, -1);
 })
@@ -458,13 +541,22 @@ Crafty.defineScene("testScene", function() {
 
 
 
+=======
+>>>>>>> 83496a8 (Смена управления на flappy)
 })
 var successFrame = document.querySelector(".success");
 var successScore = document.querySelector(".success__score");
 var successLives = document.querySelector(".success__lives");
+<<<<<<< HEAD
 var lives = 3;
 
 successFrame.addEventListener("click", function() {Crafty.enterScene("mainScene")});
+=======
+var successBtn = document.querySelector(".success__btn");
+var lives = 3;
+
+successBtn.addEventListener("click", function() {Crafty.enterScene("mainScene")});
+>>>>>>> 83496a8 (Смена управления на flappy)
 
 Crafty.enterScene("mainScene");
 //Crafty.enterScene("testScene");
