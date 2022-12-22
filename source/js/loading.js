@@ -37,8 +37,17 @@ Crafty.defineScene("loading", function() {
 		}
 			else {
 				loadDelay.cancelDelay(loading);
-				Crafty.log('загрузка окончена');
-				Crafty.enterScene("mainScene");
+				if (localStorage.getItem('attempts') != 0) Crafty.enterScene("mainScene")
+				else {
+					successFrame.style.display = 'block';
+					successTitle.textContent = 'упс!'
+					successScore.textContent = 'К сожалению все попытки закончились';
+					successLives.style.marginTop = '24px';
+					successLives.style.fontSize = '18px';
+					successLives.textContent = 'Спасибо за игру!';
+					successBtn.style.display = 'none';
+				} 
+				
 			}
 	}
 
