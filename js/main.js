@@ -51,8 +51,17 @@ Crafty.defineScene("loading", function() {
 		}
 			else {
 				loadDelay.cancelDelay(loading);
-				Crafty.log('загрузка окончена');
-				Crafty.enterScene("mainScene");
+				if (localStorage.getItem('attempts') != 0) Crafty.enterScene("mainScene")
+				else {
+					successFrame.style.display = 'block';
+					successTitle.textContent = 'упс!'
+					successScore.textContent = 'К сожалению все попытки закончились';
+					successLives.style.marginTop = '24px';
+					successLives.style.fontSize = '18px';
+					successLives.textContent = 'Спасибо за игру!';
+					successBtn.style.display = 'none';
+				} 
+				
 			}
 	}
 
@@ -128,18 +137,43 @@ Crafty.defineScene("mainScene", function() {
 			plane.pauseAnimation();
 			Crafty.audio.play("hit", 1, 0.5);
 			gameOver = true;
-			if ( lives > 0 ) lives -= 1;
 			stampDelay.cancelDelay(createStamp);
 			town.css({'animation-play-state': 'paused'});
 			townBack.css({'animation-play-state': 'paused'});
-			setTimeout(function() {
-				successFrame.style.display = 'block';
-				successScore.textContent = 'Ты собрал скидок: ' + gameScore;
-				successLives.textContent = 'Осталось попыток: ' + lives;
-			}, 500);		
+			dataUpdate();		
 		}
-
 	}
+
+	function dataUpdate() {
+		var attempts = localStorage.getItem('attempts');
+		var bestScore = localStorage.getItem('bestscore');
+		if ( attempts > 0 ) {
+			attempts -= 1;
+			localStorage.attempts = attempts;
+			if (gameScore > bestScore) localStorage.bestscore = gameScore;
+			
+			if ( attempts != 0) {
+				setTimeout(function() {
+					successFrame.style.display = 'block';
+					successScore.textContent = 'Ты собрал скидок: ' + gameScore;
+					successLives.textContent = 'Осталось попыток: ' + attempts;
+				}, 500);
+			} else {
+				setTimeout(function() {
+					successFrame.style.display = 'block';
+					successTitle.textContent = 'упс!';
+					successScore.textContent = 'Все попытки закончились';
+					successLives.textContent = 'Твой лучший счет: ' + localStorage.getItem('bestscore');
+					successBtn.disabled = true;
+					successBtn.style.background = '#C2BCBC';
+				}, 500);
+			}
+
+		} else {
+			localStorage.gift = true;
+		}
+	}
+
 
 	Crafty.c("Snow", {
 		init: function() {
@@ -437,12 +471,22 @@ Crafty.defineScene("mainScene", function() {
 	var plane = Crafty.e("Plane");
 })
 	var successFrame = document.querySelector(".success");
+	var successTitle = document.querySelector(".success__title");
 	var successScore = document.querySelector(".success__score");
 	var successLives = document.querySelector(".success__lives");
 	var successBtn = document.querySelector(".success__btn");
-	var lives = 3;
 
-	successBtn.addEventListener("click", function() {Crafty.enterScene("mainScene")});
+	if ( localStorage.getItem('user_id') == null) {
+		localStorage.setItem('user_id', 'Dave');
+		localStorage.setItem('attempts', 3);
+		localStorage.setItem('bestscore', 0);
+		localStorage.setItem('gift', false);
+	}
+
+
+	successBtn.addEventListener("click", function() {
+		if (localStorage.attempts != 0) Crafty.enterScene("mainScene")
+	});
 
 	Crafty.enterScene("loading");
 
