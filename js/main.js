@@ -153,7 +153,7 @@ Crafty.defineScene("mainScene", function() {
 			localStorage.attempts = attempts;
 			if (gameScore > bestScore) localStorage.bestscore = gameScore;
 			
-			if ( attempts != 0) {
+			if ( attempts != 0 ) { 
 				setTimeout(function() {
 					successFrame.style.display = 'block';
 					successScore.textContent = 'Ты собрал скидок: ' + gameScore;
@@ -478,7 +478,7 @@ Crafty.defineScene("mainScene", function() {
 
 	if ( localStorage.getItem('user_id') == null) {
 		localStorage.setItem('user_id', 'Dave');
-		localStorage.setItem('attempts', 3);
+		localStorage.setItem('attempts', 50);
 		localStorage.setItem('bestscore', 0);
 		localStorage.setItem('gift', false);
 	}
