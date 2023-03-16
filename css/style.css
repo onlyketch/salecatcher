@@ -3843,7 +3843,7 @@ body {
     background-position-x: 0;
   }
   to {
-    background-position-x: -1140px;
+    background-position-x: -640px;
   }
 }
 
@@ -3852,7 +3852,7 @@ body {
     background-position-x: 0;
   }
   to {
-    background-position-x: -1140px;
+    background-position-x: -640px;
   }
 }
 @-webkit-keyframes townBackScroll {

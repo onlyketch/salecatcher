@@ -22,16 +22,17 @@ Crafty.defineScene("loading", function() {
 	//***Sprites***
 	Crafty.sprite("./images/city.png", {city:[0,0,2280,520]});
 	Crafty.sprite("./images/city-back.png", {cityBack:[0,0,1140,242]});
-	Crafty.sprite("./images/moon.png", {moon:[0,0,132,132]});
+	Crafty.sprite("./images/city-bg.png", {cityBack:[0,0,1280,272]});
+	Crafty.sprite("./images/moon.png", {moon:[0,0,197,205]});
 	Crafty.sprite("./images/cloud1.png", {cloud1:[0,0,228,84]});
 	Crafty.sprite("./images/cloud2.png", {cloud2:[0,0,172,47]});
 	Crafty.sprite("./images/cloud3.png", {cloud3:[0,0,198,86]});
 	Crafty.sprite("./images/snow.png", {snow:[0,0,1036,537]});
 	Crafty.sprite(138, 78, "./images/planes.png", {planes:[0,0]});
 	Crafty.sprite("./images/btn.png", {btn:[0,0,160,160]});
-	Crafty.sprite("./images/big.png", {big:[0,0,86,565]});
-	Crafty.sprite("./images/middle.png", {middle:[0,0,86,460]});
-	Crafty.sprite("./images/small.png", {small:[0,0,86,340]});
+	Crafty.sprite("./images/big.png", {big:[0,0,110,565]});
+	Crafty.sprite("./images/middle.png", {middle:[0,0,110,460]});
+	Crafty.sprite("./images/small.png", {small:[0,0,110,340]});
 	Crafty.sprite(133, 64, "./images/sales.png", {sales:[0,0]});
 	Crafty.sprite("./images/ui-sale.png", {uisale:[0,0,19,21]});
 
@@ -139,7 +140,7 @@ Crafty.defineScene("mainScene", function() {
 			gameOver = true;
 			stampDelay.cancelDelay(createStamp);
 			town.css({'animation-play-state': 'paused'});
-			townBack.css({'animation-play-state': 'paused'});
+			//townBack.css({'animation-play-state': 'paused'});
 			dataUpdate();		
 		}
 	}
@@ -221,14 +222,14 @@ Crafty.defineScene("mainScene", function() {
 			this.addComponent("2D, DOM");
 			//this.w = 1140;
 			this.w = mainContainer.w;
-			this.h = 260;
+			this.h = 136;
 			this.x = mainContainer.x;
 			this.y = mainContainer.y + (mainContainer.h - this.h);
 			this.z = 10;
 			this.css({
-				'background': 'url("./images/city.png") repeat-x',
-				'background-size': '1140px 260px',
-				'backround-position': '0% 1140px',
+				'background': 'url("./images/city-bg.png") repeat-x',
+				'background-size': '640px 136px',
+				'backround-position': '0% 640px',
 				'animation': 'townScroll linear 12s infinite'
 			});
 		}	
@@ -322,11 +323,10 @@ Crafty.defineScene("mainScene", function() {
 				this.h = 170;
 				break;					
 			}
-			this.w = 43;
+			this.w = 55;
 			this.x = mainContainer.w;
-			this.y = mainContainer.y + (mainContainer.h - this.h - 14);
+			this.y = mainContainer.y + (mainContainer.h - this.h - 13);
 			this.z = 15;
-			this.collision(16,0,27,0,27,6,31,6,31,40,26,39,26,245,18,245,18,39,12,40,12,6,16,6);
 		},
 		events: {
 			"UpdateFrame": function() {
@@ -434,16 +434,16 @@ Crafty.defineScene("mainScene", function() {
 
 	var mainContainer = Crafty.e("2D, DOM")
 	.attr({w: sceenWidth, h: 420, x: 0})
-	.css({'background': '#87D8D9', 'overflow': 'hidden'});
+	.css({'background': '#71C5CF', 'overflow': 'hidden'});
 	mainContainer.y = screenHeight/2 - mainContainer.h/2;
 
 	//***_background objects_***
-	var townBack = Crafty.e("cityShadow");
+	//var townBack = Crafty.e("cityShadow");
 	var town = Crafty.e("town");
 
 
 	var moon = Crafty.e("2D, DOM, moon")
-	.attr({ y: mainContainer.y + 50, x: mainContainer.x + 150, w: 40, h: 40 });	
+	.attr({ y: mainContainer.y + 50, x: mainContainer.x + 200, w: 70, h: 70 });	
 
 	var cloud1 = Crafty.e("2D, DOM, cloud1")
 	.attr({ y: mainContainer.y + 17, x: mainContainer.x + 16, w: 65, h: 24 });
@@ -454,7 +454,7 @@ Crafty.defineScene("mainScene", function() {
 	var cloud3 = Crafty.e("2D, DOM, cloud3")
 	.attr({ y: mainContainer.y + 14, x: mainContainer.w - 65, w: 58, h: 25 });
 
-	Crafty.e("Snow");
+	//Crafty.e("Snow");
 
 	Crafty.e("floor");
 	Crafty.e("ceiling");
